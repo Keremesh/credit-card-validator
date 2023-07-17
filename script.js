@@ -1,3 +1,14 @@
+var cardNumberInput = document.getElementById('cardNumber');
+
+cardNumberInput.addEventListener('input', function() {
+  var cardNumber = this.value.trim();
+  if (cardNumber.length > 16) {
+    cardNumber = cardNumber.slice(0, 16);
+  }
+  
+  document.querySelector('.card-box .number').textContent = cardNumber;
+});
+
 document.getElementById("validateBtn").addEventListener("click", function() {
   let cardNumber = document.getElementById("cardNumber").value;
   let isValid = validateCardNumber(cardNumber);
@@ -13,23 +24,26 @@ document.getElementById("validateBtn").addEventListener("click", function() {
 });
 
 
-/// Luhn algorithm functions:
+/// Luhn algorithm function:
 
-const validateCardNumber = (cardNumber) => {
-  const last = cardNumber[cardNumber.length - 1]
-  const newArr = cardNumber.slice(0, -1).reverse()
-    let total = 0;
-    for(let i = 0; i < newArr.length; i++){
-      if(i % 2 == 0){
-        let multi = newArr[i]*2;
-        if(multi > 9) {
-          multi -= 9
-        } 
-        total += multi;
-      } else {
-        total += newArr[i];
+function validateCardNumber(cardNumber) {
+  var cleanNumber = cardNumber.replace(/\D/g, ''); // Remove non-digit characters
+  var reversedNumber = cleanNumber.split('').reverse().join('');
+  var sum = 0;
+
+  for (var i = 0; i < reversedNumber.length; i++) {
+    var digit = parseInt(reversedNumber[i], 10);
+
+    if (i % 2 === 1) {
+      digit *= 2;
+
+      if (digit > 9) {
+        digit -= 9;
       }
+    }
+
+    sum += digit;
   }
-  total += last   
-  return total % 10 === 0;
-};
+
+  return sum % 10 === 0;
+}
